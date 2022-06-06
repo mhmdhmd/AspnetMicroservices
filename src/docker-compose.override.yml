@@ -66,6 +66,7 @@ services:
 
   catalog.api:
     container_name: catalog.api
+    restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "DatabaseSettings:ConnectionString=mongodb://catalogdb:27017"
@@ -76,6 +77,7 @@ services:
 
   basket.api:
     container_name: basket.api
+    restart: always    
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "CacheSettings:ConnectionString=basketdb:6379"
@@ -89,6 +91,7 @@ services:
 
   discount.api:
     container_name: discount.api
+    restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "DatabaseSettings:ConnectionString=server=discountdb;port=5432;database=DiscountDb;user id=admin;password=admin123*;"
@@ -99,6 +102,7 @@ services:
 
   discount.grpc:
     container_name: discount.grpc
+    restart: always    
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "DatabaseSettings:ConnectionString=server=discountdb;port=5432;database=DiscountDb;user id=admin;password=admin123*;"
@@ -110,6 +114,7 @@ services:
 
   ordering.api:
     container_name: ordering.api
+    restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "ConnectionStrings:OrderingConnectionString=server=orderdb; database=OrderDb; user id=sa; password=admin123*;"
@@ -120,3 +125,16 @@ services:
     ports:
       - "8004:80"
 
+
+  ocelotapigw:
+    container_name: ocelotapigw
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - ordering.api
+      - discount.api
+      - basket.api
+      - catalog.api
+    ports:
+      - "8010:80"
